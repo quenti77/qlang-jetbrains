@@ -1,0 +1,38 @@
+<idea-plugin>
+    <id>dev.qlang.jetbrains</id>
+    <name>qlang</name>
+    <vendor url="https://github.com/quenti77/qlang">quenti77</vendor>
+    <description><![CDATA[
+        Les fichiers <code>*.q</code> du langage <a href="https://github.com/quenti77/qlang">qlang</a> :
+        coloration, serveur de langage (<code>qlang lsp</code> : erreurs, infobulles, complétion, définition,
+        références, renommage, plan du fichier, mise en forme) et mise en forme à la frappe — <code>end</code> et
+        indentation ajoutés sur Entrée. Demande un IDE JetBrains payant (PhpStorm, IntelliJ IDEA, WebStorm…) et
+        l'exécutable <code>qlang</code>.
+    ]]></description>
+
+    <depends>com.intellij.modules.platform</depends>
+    <depends>com.intellij.modules.lsp</depends>
+    <depends>org.jetbrains.plugins.textmate</depends>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <fileType name="qlang" language="qlang" extensions="q"
+                  implementationClass="dev.qlang.jetbrains.QlangFileType" fieldName="INSTANCE"/>
+        <editorHighlighterProvider filetype="qlang"
+                  implementationClass="dev.qlang.jetbrains.QlangEditorHighlighterProvider"/>
+        <lang.commenter language="qlang" implementationClass="dev.qlang.jetbrains.QlangCommenter"/>
+
+        <platform.lsp.serverSupportProvider implementation="dev.qlang.jetbrains.QlangLspServerSupportProvider"/>
+
+        <enterHandlerDelegate implementation="dev.qlang.jetbrains.QlangEnterHandler"/>
+        <typedHandler implementation="dev.qlang.jetbrains.QlangTypedHandler"/>
+
+        <applicationService serviceImplementation="dev.qlang.jetbrains.QlangSettings"/>
+        <applicationConfigurable parentId="language" instance="dev.qlang.jetbrains.QlangConfigurable"
+                                 id="dev.qlang.jetbrains.settings" displayName="qlang"/>
+        <notificationGroup id="qlang" displayType="BALLOON"/>
+    </extensions>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <textmate.bundleProvider implementation="dev.qlang.jetbrains.QlangTextMateBundleProvider"/>
+    </extensions>
+</idea-plugin>
