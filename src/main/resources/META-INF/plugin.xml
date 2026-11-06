@@ -1,6 +1,6 @@
 <idea-plugin>
     <id>dev.qlang.jetbrains</id>
-    <name>qlang</name>
+    <name>qlang Language Support</name>
     <vendor url="https://github.com/quenti77/qlang">quenti77</vendor>
     <description><![CDATA[
         Les fichiers <code>*.q</code> du langage <a href="https://github.com/quenti77/qlang">qlang</a> :
