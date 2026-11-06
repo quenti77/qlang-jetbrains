@@ -101,4 +101,16 @@ class QlangOnTypeTest : BasePlatformTestCase() {
         myFixture.performEditorAction("ReformatCode")
         assertEquals("fun f()\n    let a = 1\nend\n", myFixture.editor.document.text)
     }
+
+    fun testHighlighting() {
+        val f = myFixture.configureByText("t.q", "fun f()\n    let a = 1 -- note\nend\n")
+        val hl = com.intellij.openapi.editor.highlighter.EditorHighlighterFactory.getInstance()
+            .createEditorHighlighter(project, f.virtualFile)
+        hl.setText(myFixture.editor.document.text)
+        val it = hl.createIterator(0)
+        val seen = mutableSetOf<String>()
+        while (!it.atEnd()) { seen += it.tokenType.toString(); it.advance() }
+        println("TOKENS: " + seen + " HL=" + hl.javaClass.name)
+        assertTrue("pas de jetons TextMate : $seen", seen.any { "qlang" in it })
+    }
 }

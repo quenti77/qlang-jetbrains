@@ -5,10 +5,13 @@ import com.intellij.openapi.editor.colors.EditorColorsScheme
 import com.intellij.openapi.editor.highlighter.EditorHighlighter
 import com.intellij.openapi.fileTypes.EditorHighlighterProvider
 import com.intellij.openapi.fileTypes.FileType
+import com.intellij.openapi.fileTypes.SyntaxHighlighter
+import com.intellij.openapi.fileTypes.SyntaxHighlighterFactory
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import org.jetbrains.plugins.textmate.api.TextMateBundleProvider
 import org.jetbrains.plugins.textmate.language.syntax.highlighting.TextMateEditorHighlighterProvider
+import org.jetbrains.plugins.textmate.language.syntax.highlighting.TextMateSyntaxHighlighterFactory
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.StandardCopyOption
@@ -67,4 +70,11 @@ class QlangEditorHighlighterProvider : EditorHighlighterProvider {
         virtualFile: VirtualFile?,
         colors: EditorColorsScheme,
     ): EditorHighlighter = delegate.getEditorHighlighter(project, fileType, virtualFile, colors)
+}
+
+/** Le lexeur : celui du plugin TextMate, qui retrouve la grammaire par le nom du fichier. */
+class QlangSyntaxHighlighterFactory : SyntaxHighlighterFactory() {
+    private val delegate = TextMateSyntaxHighlighterFactory()
+    override fun getSyntaxHighlighter(project: Project?, virtualFile: VirtualFile?): SyntaxHighlighter =
+        delegate.getSyntaxHighlighter(project, virtualFile)
 }

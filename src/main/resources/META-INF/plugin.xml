@@ -17,6 +17,8 @@
     <extensions defaultExtensionNs="com.intellij">
         <fileType name="qlang" language="qlang" extensions="q"
                   implementationClass="dev.qlang.jetbrains.QlangFileType" fieldName="INSTANCE"/>
+        <lang.syntaxHighlighterFactory language="qlang"
+                  implementationClass="dev.qlang.jetbrains.QlangSyntaxHighlighterFactory"/>
         <editorHighlighterProvider filetype="qlang"
                   implementationClass="dev.qlang.jetbrains.QlangEditorHighlighterProvider"/>
         <lang.commenter language="qlang" implementationClass="dev.qlang.jetbrains.QlangCommenter"/>
