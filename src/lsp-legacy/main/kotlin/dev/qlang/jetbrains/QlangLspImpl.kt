@@ -15,7 +15,7 @@ import java.nio.charset.StandardCharsets
 import java.nio.file.Path
 import java.util.concurrent.CompletableFuture
 
-// Variante « legacy » : API LSP de PhpStorm 2025.3 à 2026.1 (LspServer, LspServerSupportProvider…).
+// Variante « legacy » : API LSP de PhpStorm 2025.3 à 2026.1.3 (LspServer, LspServerSupportProvider…).
 
 class QlangLspServerSupportProvider : LspServerSupportProvider {
     override fun fileOpened(project: Project, file: VirtualFile, serverStarter: LspServerSupportProvider.LspServerStarter) {

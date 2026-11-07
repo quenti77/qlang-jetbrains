@@ -2,13 +2,13 @@
 
 ## 0.1.1
 
-Même plugin, construit pour PhpStorm et les IDE **2026.2 et plus** (builds 262+) avec la nouvelle API LSP de la
+Même plugin, construit pour PhpStorm et les IDE **2026.1.4 et plus** (builds 261.26222 et plus, 2026.2, 2026.3…) avec la nouvelle API LSP de la
 plateforme (`LspClient`, `LspIntegrationProvider`…), sans aucun usage d'API dépréciée. La 0.1.0 reste la version
-des IDE 2025.3 et 2026.1 (builds 253 à 261), dont l'API LSP est l'ancienne. Aucun changement de comportement.
+des IDE 2025.3 à 2026.1.3 (builds 253 à 261.26221), dont l'API LSP est l'ancienne. Aucun changement de comportement.
 
 ## 0.1.0
 
-Première version, pour les IDE 2025.3 et 2026.1 (builds 253 à 261).
+Première version, pour les IDE 2025.3 à 2026.1.3 (builds 253 à 261.26221).
 
 - Type de fichier `qlang` pour `*.q`, avec l'icône du langage.
 - Coloration par la grammaire TextMate de qlang (`source.qlang`), embarquée : rien à régler.

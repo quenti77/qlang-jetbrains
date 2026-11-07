@@ -13,7 +13,7 @@ import java.util.concurrent.atomic.AtomicBoolean
 fun VirtualFile.isQlang() = extension == "q"
 
 /**
- * Ce que le reste du plugin sait faire du serveur qlang. L'API LSP de la plateforme a changé de noms en 2026.2
+ * Ce que le reste du plugin sait faire du serveur qlang. L'API LSP de la plateforme a changé de noms en 2026.1.4
  * (LspServer -> LspClient…) : chaque variante de compilation (`src/lsp-legacy`, `src/lsp-new`) l'implémente.
  */
 interface QlangServer {

@@ -8,9 +8,9 @@ plugins {
 
 group = "dev.qlang"
 
-// Deux variantes, car l'API LSP de la plateforme a changé de noms en 2026.2 (LspServer -> LspClient…) :
-//   legacy (défaut) : PhpStorm 2025.3 et 2026.1 (builds 253 à 261) -> src/lsp-legacy
-//   new             : PhpStorm 2026.2+ (build 262 et plus)         -> src/lsp-new   (./gradlew -PlspVariant=new …)
+// Deux variantes, car l'API LSP de la plateforme a changé de noms en 2026.1.4 (LspServer -> LspClient…) :
+//   legacy (défaut) : PhpStorm 2025.3 à 2026.1.3 (builds 253 à 261.26221) -> src/lsp-legacy
+//   new             : PhpStorm 2026.1.4+ (build 261.26222 et plus) -> src/lsp-new   (./gradlew -PlspVariant=new …)
 val lspVariant = providers.gradleProperty("lspVariant").getOrElse("legacy")
 require(lspVariant in setOf("legacy", "new")) { "lspVariant doit valoir legacy ou new" }
 fun prop(name: String) = providers.gradleProperty(if (lspVariant == "new") "new" + name.replaceFirstChar { it.uppercase() } else name)
@@ -50,14 +50,14 @@ intellijPlatform {
         version = project.version.toString()
         ideaVersion {
             sinceBuild = prop("pluginSinceBuild")
-            if (lspVariant == "legacy") untilBuild = "261.*"
+            if (lspVariant == "legacy") untilBuild = "261.26221.*"
         }
     }
     pluginVerification {
         ides {
             val local = providers.gradleProperty("platformLocalPath").orNull
             if (local != null) local(file(local)) else create("PS", prop("platformVersion").get())
-            // Vérifier aussi d'autres versions : -PverifyAlso=2026.1,2026.2
+            // Vérifier aussi d'autres versions : -PverifyAlso=2026.1.3,2026.2
             providers.gradleProperty("verifyAlso").orNull?.split(",")?.forEach { create("PS", it.trim()) }
         }
     }
