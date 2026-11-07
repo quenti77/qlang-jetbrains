@@ -1,6 +1,5 @@
 package dev.qlang.jetbrains
 
-import com.intellij.platform.lsp.api.LspServerManager
 import com.intellij.testFramework.PlatformTestUtil
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import org.jetbrains.plugins.textmate.TextMateService
@@ -52,8 +51,7 @@ class QlangOnTypeTest : BasePlatformTestCase() {
     private fun waitForServer() {
         myFixture.file // ouvre l'éditeur
         PlatformTestUtil.waitWithEventsDispatching("le serveur qlang n'a pas démarré", {
-            LspServerManager.getInstance(project).getServersForProvider(QlangLspServerSupportProvider::class.java)
-                .any { it.state == com.intellij.platform.lsp.api.LspServerState.Running }
+            isQlangServerRunning(project)
         }, 20)
         // le client envoie didOpen un peu après le démarrage : on le laisse arriver (dans l'IDE, le fichier est ouvert bien avant la frappe)
         repeat(20) {

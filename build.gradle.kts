@@ -7,7 +7,22 @@ plugins {
 }
 
 group = "dev.qlang"
-version = providers.gradleProperty("pluginVersion").get()
+
+// Deux variantes, car l'API LSP de la plateforme a changé de noms en 2026.2 (LspServer -> LspClient…) :
+//   legacy (défaut) : PhpStorm 2025.3 et 2026.1 (builds 253 à 261) -> src/lsp-legacy
+//   new             : PhpStorm 2026.2+ (build 262 et plus)         -> src/lsp-new   (./gradlew -PlspVariant=new …)
+val lspVariant = providers.gradleProperty("lspVariant").getOrElse("legacy")
+require(lspVariant in setOf("legacy", "new")) { "lspVariant doit valoir legacy ou new" }
+fun prop(name: String) = providers.gradleProperty(if (lspVariant == "new") "new" + name.replaceFirstChar { it.uppercase() } else name)
+version = prop("pluginVersion").get()
+
+sourceSets {
+    main {
+        kotlin.srcDir("src/lsp-$lspVariant/main/kotlin")
+        resources.srcDir("src/lsp-$lspVariant/main/resources")
+    }
+    test { kotlin.srcDir("src/lsp-$lspVariant/test/kotlin") }
+}
 
 repositories {
     mavenCentral()
@@ -17,7 +32,7 @@ repositories {
 dependencies {
     intellijPlatform {
         val local = providers.gradleProperty("platformLocalPath").orNull
-        if (local != null) local(local) else phpstorm(providers.gradleProperty("platformVersion").get())
+        if (local != null) local(local) else phpstorm(prop("platformVersion").get())
 
         bundledPlugin("org.jetbrains.plugins.textmate")
         testFramework(TestFrameworkType.Platform)
@@ -33,12 +48,17 @@ java { sourceCompatibility = JavaVersion.VERSION_21; targetCompatibility = JavaV
 intellijPlatform {
     pluginConfiguration {
         version = project.version.toString()
-        ideaVersion { sinceBuild = providers.gradleProperty("pluginSinceBuild") }
+        ideaVersion {
+            sinceBuild = prop("pluginSinceBuild")
+            if (lspVariant == "legacy") untilBuild = "261.*"
+        }
     }
     pluginVerification {
         ides {
             val local = providers.gradleProperty("platformLocalPath").orNull
-            if (local != null) local(file(local)) else create("PS", providers.gradleProperty("platformVersion").get())
+            if (local != null) local(file(local)) else create("PS", prop("platformVersion").get())
+            // Vérifier aussi d'autres versions : -PverifyAlso=2026.1,2026.2
+            providers.gradleProperty("verifyAlso").orNull?.split(",")?.forEach { create("PS", it.trim()) }
         }
     }
 }

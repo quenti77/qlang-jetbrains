@@ -4,7 +4,7 @@ Le plugin JetBrains du langage [qlang](https://github.com/quenti77/qlang) : les 
 erreurs, complétion, définition, renommage… et surtout le `end` et l'indentation ajoutés **quand on appuie sur Entrée**.
 
 Il s'appuie sur le client LSP **natif** de la plateforme IntelliJ (pas sur LSP4IJ) et sur le plugin TextMate fourni avec
-l'IDE. Il vise **PhpStorm et les IDE JetBrains payants récents** (2025.3 et plus : IntelliJ IDEA, WebStorm, PyCharm
+l'IDE. Il vise **PhpStorm et les IDE JetBrains payants récents** (2025.3 et plus, en deux versions du plugin : IntelliJ IDEA, WebStorm, PyCharm
 Professional, RubyMine, GoLand, CLion…). Les IDE gratuits (Community) n'ont pas le client LSP natif.
 
 ## Ce qu'il fait
@@ -49,6 +49,19 @@ terminal). S'il est introuvable, une notification l'explique et propose d'ouvrir
 ./gradlew buildPlugin # build/distributions/*.zip
 ./gradlew verifyPlugin
 ```
+
+### Deux variantes
+
+L'API LSP de la plateforme a changé de noms en 2026.2 (`LspServer` → `LspClient`…), et la nouvelle n'existe pas avant.
+Le plugin est donc compilé en deux variantes (les sources communes sont dans `src/main`, le reste dans `src/lsp-*`) :
+
+| Variante | Version | IDE | Sources | Commande |
+|---|---|---|---|---|
+| `legacy` (défaut) | 0.1.0 | 2025.3 et 2026.1 (253 à 261) | `src/lsp-legacy` | `./gradlew buildPlugin` |
+| `new` | 0.1.1 | 2026.2 et plus (262+) | `src/lsp-new` | `./gradlew -PlspVariant=new buildPlugin` |
+
+La variante `new` a besoin d'un JDK 25 (celui de l'IDE 2026.2) ; `verifyPlugin -PverifyAlso=2026.1,2026.2` vérifie
+d'autres versions que celle de compilation.
 
 Par défaut le plugin est construit contre PhpStorm 2025.3 (téléchargé, JDK 21 requis). Pour utiliser un PhpStorm déjà
 installé, ce qui évite le téléchargement :

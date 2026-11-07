@@ -7,14 +7,24 @@ on:
 
 jobs:
   build:
-    name: Build, tests, vérification
+    name: Build, tests, vérification (${{ matrix.variant }})
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - variant: legacy  # IDE 2025.3 et 2026.1
+            java: 21
+            verify: 2026.1
+          - variant: new     # IDE 2026.2 et plus
+            java: 25
+            verify: ""
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: 21
+          java-version: ${{ matrix.java }}
       - uses: gradle/actions/setup-gradle@v4
       - name: Installer qlang
         run: |
@@ -22,10 +32,10 @@ jobs:
           echo "$HOME/.local/bin" >> "$GITHUB_PATH"
       - run: qlang --version
       - name: Essais (avec le vrai serveur)
-        run: QLANG_BIN="$(which qlang)" ./gradlew test
-      - run: ./gradlew buildPlugin
-      - run: ./gradlew verifyPlugin
+        run: QLANG_BIN="$(which qlang)" ./gradlew -PlspVariant=${{ matrix.variant }} test
+      - run: ./gradlew -PlspVariant=${{ matrix.variant }} buildPlugin
+      - run: ./gradlew -PlspVariant=${{ matrix.variant }} verifyPlugin ${{ matrix.verify != '' && format('-PverifyAlso={0}', matrix.verify) || '' }}
       - uses: actions/upload-artifact@v4
         with:
-          name: qlang-jetbrains
+          name: qlang-jetbrains-${{ matrix.variant }}
           path: build/distributions/*.zip

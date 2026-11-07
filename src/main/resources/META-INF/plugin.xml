@@ -1,4 +1,4 @@
-<idea-plugin>
+<idea-plugin xmlns:xi="http://www.w3.org/2001/XInclude">
     <id>dev.qlang.jetbrains</id>
     <name>qlang Language Support</name>
     <vendor url="https://github.com/quenti77/qlang">quenti77</vendor>
@@ -23,8 +23,6 @@
                   implementationClass="dev.qlang.jetbrains.QlangEditorHighlighterProvider"/>
         <lang.commenter language="qlang" implementationClass="dev.qlang.jetbrains.QlangCommenter"/>
 
-        <platform.lsp.serverSupportProvider implementation="dev.qlang.jetbrains.QlangLspServerSupportProvider"/>
-
         <enterHandlerDelegate implementation="dev.qlang.jetbrains.QlangEnterHandler"/>
         <typedHandler implementation="dev.qlang.jetbrains.QlangTypedHandler"/>
 
@@ -37,4 +35,7 @@
     <extensions defaultExtensionNs="com.intellij">
         <textmate.bundleProvider implementation="dev.qlang.jetbrains.QlangTextMateBundleProvider"/>
     </extensions>
+
+    <!-- Enregistrement du serveur LSP : propre à chaque variante (src/lsp-legacy ou src/lsp-new) -->
+    <xi:include href="/META-INF/qlang-lsp.xml" xpointer="xpointer(/idea-plugin/*)"/>
 </idea-plugin>

@@ -1,6 +1,5 @@
 package dev.qlang.jetbrains
 
-import com.intellij.execution.configurations.PathEnvironmentVariableUtil
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.PersistentStateComponent
 import com.intellij.openapi.components.Service
@@ -12,6 +11,7 @@ import com.intellij.openapi.ui.DialogPanel
 import com.intellij.ui.dsl.builder.AlignX
 import com.intellij.ui.dsl.builder.bindText
 import com.intellij.ui.dsl.builder.panel
+import java.io.File
 import java.nio.file.Files
 import java.nio.file.Path
 
@@ -50,11 +50,11 @@ object QlangExecutable {
             val p = Path.of(configured.trim())
             return p.takeIf { Files.isRegularFile(it) && Files.isExecutable(it) }
         }
-        PathEnvironmentVariableUtil.findInPath("qlang")?.let { return it.toPath() }
         val home = System.getProperty("user.home")
         val name = if (System.getProperty("os.name").startsWith("Windows")) "qlang.exe" else "qlang"
-        return listOf("$home/.local/bin", "$home/.cargo/bin", "/usr/local/bin", "/usr/bin", "/opt/homebrew/bin")
-            .map { Path.of(it, name) }
+        val pathDirs = (System.getenv("PATH") ?: "").split(File.pathSeparator).filter { it.isNotBlank() }
+        return (pathDirs + listOf("$home/.local/bin", "$home/.cargo/bin", "/usr/local/bin", "/usr/bin", "/opt/homebrew/bin"))
+            .mapNotNull { runCatching { Path.of(it, name) }.getOrNull() }
             .firstOrNull { Files.isRegularFile(it) && Files.isExecutable(it) }
     }
 }
@@ -65,7 +65,7 @@ class QlangConfigurable : BoundSearchableConfigurable("qlang", "dev.qlang.jetbra
     override fun createPanel(): DialogPanel = panel {
         row("Exécutable qlang :") {
             textFieldWithBrowseButton(
-                FileChooserDescriptorFactory.createSingleFileDescriptor().withTitle("Exécutable qlang"),
+                FileChooserDescriptorFactory.singleFile().withTitle("Exécutable qlang"),
             ).align(AlignX.FILL).bindText(settings::executablePath)
                 .comment("Laisser vide pour chercher <code>qlang</code> dans le PATH.")
         }

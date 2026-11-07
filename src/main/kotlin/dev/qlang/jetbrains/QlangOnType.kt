@@ -59,13 +59,13 @@ private fun formatOnType(project: Project, editor: Editor, file: PsiFile, ch: St
     val caret = editor.caretModel.offset
     val line = document.getLineNumber(caret)
     val params = DocumentOnTypeFormattingParams(
-        TextDocumentIdentifier(server.descriptor.getFileUri(vfile)),
+        TextDocumentIdentifier(server.fileUri(vfile)),
         FormattingOptions(4, true),
         Position(line, caret - document.getLineStartOffset(line)),
         ch,
     )
     val edits = try {
-        server.sendRequestSync(TIMEOUT_MS) { it.textDocumentService.onTypeFormatting(params) }
+        server.request(TIMEOUT_MS) { it.textDocumentService.onTypeFormatting(params) }
     } catch (e: Exception) {
         LOG.info("onTypeFormatting: ${e.message}")
         null
