@@ -17,7 +17,7 @@ Professional, RubyMine, GoLand, CLion…). Les IDE gratuits (Community) n'ont pa
 | **Entrée** | après `fun f()`, `struct P`, `impl X`, `enum E`, `if x then`… le plugin demande au serveur `textDocument/onTypeFormatting` (`\n`) et applique la réponse : `end` ajouté, ligne indentée |
 | Espace | après `case`, `else`, `elseif`, la ligne se remet à son niveau (`onTypeFormatting` avec `" "`) |
 | Reformat Code | `textDocument/formatting`, c'est-à-dire `qlang fmt`, pour les `*.q` |
-| Commentaires | `--` et `--( … --)` |
+| Commentaires | `--` (ligne) et `--*` … `--*` (bloc) |
 
 L'IDE (comme LSP4IJ) n'envoie jamais `onTypeFormatting` sur Entrée : sans ce plugin, taper Entrée après `fun salut()`
 n'ajoute ni `end` ni indentation. Le plugin s'en charge dans [`QlangOnType.kt`](src/main/kotlin/dev/qlang/jetbrains/QlangOnType.kt).
